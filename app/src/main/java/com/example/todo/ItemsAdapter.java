@@ -51,14 +51,17 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
         return items.size();
     }
 
-    public List<String> filterItems(String query) {
+    public void filterItems(String query, List<String> allItems) {
+        if (query.length() == 0) {
+            return;
+        }
         List<String> filteredItems = new ArrayList<>();
-        for(String item: items) {
+        for(String item: allItems) {
             if (item.toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))) {
                 filteredItems.add(item);
             }
         }
-        return filteredItems;
+        items = filteredItems;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

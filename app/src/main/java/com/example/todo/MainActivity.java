@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemLongClicked(int position) {
                 items.remove(position);
-                itemsAdapter.notifyItemRemoved(position);
+                itemsAdapter.filterItems("", items);
                 Toast.makeText(getApplicationContext(), "Item was removed", Toast.LENGTH_SHORT).show();
                 saveItems();
             }
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String todoItem = etItem.getText().toString();
                 items.add(todoItem);
-                itemsAdapter.notifyItemInserted(items.size() - 1);
+                itemsAdapter.filterItems("", items);;
                 etItem.setText("");
                 Toast.makeText(getApplicationContext(), "Item was added", Toast.LENGTH_SHORT).show();
                 saveItems();
@@ -95,13 +95,13 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                itemsAdapter.filterItems(s, items);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
-                items = itemsAdapter.filterItems(s);
-                Log.w("Search View", s);
+                itemsAdapter.filterItems(s, items);
                 return false;
             }
         });
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
             String itemText = data.getStringExtra(KEY_ITEM_TEXT);
             int position = data.getExtras().getInt(KEY_ITEM_POSITION);
             items.set(position, itemText);
-            itemsAdapter.notifyItemChanged(position);
+            itemsAdapter.filterItems("", items);
             saveItems();
             Toast.makeText(getApplicationContext(), "Updated successfully", Toast.LENGTH_SHORT).show();
         } else {
