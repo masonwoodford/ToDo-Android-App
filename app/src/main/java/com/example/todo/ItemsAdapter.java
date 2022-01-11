@@ -9,7 +9,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> {
 
@@ -47,6 +49,16 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    public List<String> filterItems(String query) {
+        List<String> filteredItems = new ArrayList<>();
+        for(String item: items) {
+            if (item.toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))) {
+                filteredItems.add(item);
+            }
+        }
+        return filteredItems;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

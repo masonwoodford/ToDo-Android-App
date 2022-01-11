@@ -14,7 +14,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="6dp"
         android:layout_marginBottom="-1dp"
-        android:textColor="@color/black"
         android:text="@string/add" />
 
     <EditText
@@ -36,10 +35,19 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvItems"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="631dp"
         android:layout_above="@+id/etItem"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="52dp"
         android:layout_marginBottom="0dp" />
+
+    <SearchView
+        android:id="@+id/searchItem"
+        android:layout_width="184dp"
+        android:layout_height="81dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="-10dp" />
 </RelativeLayout>
