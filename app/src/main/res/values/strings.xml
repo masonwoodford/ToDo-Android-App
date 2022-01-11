@@ -4,4 +4,6 @@
     <string name="add_hint">Add an item here!</string>
     <string name="save">Save</string>
     <string name="update_hint">Update the item</string>
+    <string name="welcome_text">Start!</string>
+    <string name="header">Welcome to my ToDo App</string>
 </resources>
