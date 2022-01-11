@@ -1,5 +1,6 @@
 package com.example.todo;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnLongClickListener;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -49,19 +51,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
     @Override
     public int getItemCount() {
         return items.size();
-    }
-
-    public void filterItems(String query, List<String> allItems) {
-        if (query.length() == 0) {
-            return;
-        }
-        List<String> filteredItems = new ArrayList<>();
-        for(String item: allItems) {
-            if (item.toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))) {
-                filteredItems.add(item);
-            }
-        }
-        items = filteredItems;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

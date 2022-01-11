@@ -40,14 +40,19 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="52dp"
-        android:layout_marginBottom="0dp" />
+        android:layout_marginBottom="0dp"
+        tools:listitem="@layout/recycler_view_item" />
 
     <SearchView
         android:id="@+id/searchItem"
-        android:layout_width="184dp"
-        android:layout_height="81dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="-10dp" />
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="0dp" />
+
 </RelativeLayout>

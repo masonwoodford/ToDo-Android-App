@@ -16,7 +16,7 @@
         android:layout_marginStart="126dp"
         android:layout_marginBottom="56dp"
         android:text="@string/welcome_text"
-        android:textSize="24dp" />
+        android:textSize="24sp" />
 
     <TextView
         android:id="@+id/textView"
@@ -28,5 +28,11 @@
         android:layout_marginStart="104dp"
         android:layout_marginTop="95dp"
         android:text="@string/header"
-        android:textAppearance="@android:style/TextAppearance.Material.Headline" />
+        android:textAppearance="@android:style/TextAppearance.Material.Headline"
+        android:typeface="monospace"
+        android:textStyle="bold"
+        android:shadowColor="#00ccff"
+        android:shadowRadius="2"
+        android:shadowDx="1"
+        android:shadowDy="1"/>
 </RelativeLayout>

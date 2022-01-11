@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SearchView;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemLongClicked(int position) {
                 items.remove(position);
-                itemsAdapter.filterItems("", items);
+                itemsAdapter.notifyItemRemoved(position);
                 Toast.makeText(getApplicationContext(), "Item was removed", Toast.LENGTH_SHORT).show();
                 saveItems();
             }
@@ -78,10 +81,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String todoItem = etItem.getText().toString();
                 items.add(todoItem);
-                itemsAdapter.filterItems("", items);;
+                itemsAdapter.notifyItemInserted(items.size()-1);
                 etItem.setText("");
                 Toast.makeText(getApplicationContext(), "Item was added", Toast.LENGTH_SHORT).show();
                 saveItems();
+                closeKeyboard();
             }
         });
 
@@ -95,13 +99,26 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                itemsAdapter.filterItems(s, items);
+                onQueryTextChange(s);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
-                itemsAdapter.filterItems(s, items);
+                if (s.length() == 0) {
+                    itemsAdapter = new ItemsAdapter(items, onLongClickListener, onClickListener);
+                    rvItems.setAdapter(itemsAdapter);
+                    return false;
+                }
+                List<String> filteredItems = new ArrayList<>();
+                for(String item: items) {
+                    if (item.toLowerCase(Locale.ROOT).contains(s.toLowerCase(Locale.ROOT))) {
+                        filteredItems.add(item);
+                    }
+                }
+                itemsAdapter = new ItemsAdapter(filteredItems, onLongClickListener, onClickListener);
+                rvItems.setAdapter(itemsAdapter);
+
                 return false;
             }
         });
@@ -114,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
             String itemText = data.getStringExtra(KEY_ITEM_TEXT);
             int position = data.getExtras().getInt(KEY_ITEM_POSITION);
             items.set(position, itemText);
-            itemsAdapter.filterItems("", items);
+            itemsAdapter.notifyItemChanged(position);
             saveItems();
             Toast.makeText(getApplicationContext(), "Updated successfully", Toast.LENGTH_SHORT).show();
         } else {
@@ -124,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private File getDataFile() {
-        return new File(getFilesDir(), "data.txt");
+        return new File(getFilesDir(), "items.txt");
     }
 
     private void loadItems() {
@@ -141,6 +158,14 @@ public class MainActivity extends AppCompatActivity {
             FileUtils.writeLines(getDataFile(), items);
         } catch (IOException e) {
             Log.e("MainActivity", "Error writing items", e);
+        }
+    }
+
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager manager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 }
