@@ -14,7 +14,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="6dp"
         android:layout_marginBottom="-1dp"
-        android:text="Add" />
+        android:textColor="@color/black"
+        android:text="@string/add" />
 
     <EditText
         android:id="@+id/etItem"
@@ -27,7 +28,7 @@
         android:layout_marginBottom="0dp"
         android:layout_toStartOf="@+id/btnAdd"
         android:ems="10"
-        android:hint="Add an item here!"
+        android:hint="@string/add_hint"
         android:inputType="textPersonName"
         android:minHeight="48dp"
         tools:ignore="SpeakableTextPresentCheck" />
