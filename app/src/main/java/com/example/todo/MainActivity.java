@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String KEY_ITEM_POSITION = "item_position";
     public static final int EDIT_TEXT_CODE = 5;
 
-    List<String> items;
+    List<ToDoItem> items;
 
     Button btnAdd;
     EditText etItem;
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         ItemsAdapter.OnClickListener onClickListener = position -> {
             Intent i = new Intent(MainActivity.this, EditActivity.class);
-            i.putExtra(KEY_ITEM_TEXT, items.get(position));
+            i.putExtra(KEY_ITEM_TEXT, items.get(position).item);
             i.putExtra(KEY_ITEM_POSITION, position);
             startActivityForResult(i, EDIT_TEXT_CODE);
         };
@@ -72,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
 
         btnAdd.setOnClickListener(view -> {
             String todoItem = etItem.getText().toString();
-            items.add(todoItem);
+            ToDoItem newToDoItem = new ToDoItem(todoItem, false);
+            items.add(newToDoItem);
             itemsAdapter.notifyItemInserted(items.size()-1);
             etItem.setText("");
             Toast.makeText(getApplicationContext(), "Item was added", Toast.LENGTH_SHORT).show();
@@ -96,9 +97,9 @@ public class MainActivity extends AppCompatActivity {
                     rvItems.setAdapter(itemsAdapter);
                     return false;
                 }
-                List<String> filteredItems = new ArrayList<>();
-                for(String item: items) {
-                    if (item.toLowerCase(Locale.ROOT).contains(s.toLowerCase(Locale.ROOT))) {
+                List<ToDoItem> filteredItems = new ArrayList<>();
+                for(ToDoItem item: items) {
+                    if (item.item.toLowerCase(Locale.ROOT).contains(s.toLowerCase(Locale.ROOT))) {
                         filteredItems.add(item);
                     }
                 }
@@ -116,8 +117,9 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == EDIT_TEXT_CODE) {
             assert data != null;
             String itemText = data.getStringExtra(KEY_ITEM_TEXT);
+            ToDoItem newItem = new ToDoItem(itemText, false);
             int position = data.getExtras().getInt(KEY_ITEM_POSITION);
-            items.set(position, itemText);
+            items.set(position, newItem);
             itemsAdapter.notifyItemChanged(position);
             saveItems();
             Toast.makeText(getApplicationContext(), "Updated successfully", Toast.LENGTH_SHORT).show();
@@ -133,7 +135,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadItems() {
         try {
-            items = new ArrayList<>(FileUtils.readLines(getDataFile(), Charset.defaultCharset()));
+            ArrayList<String> itemsOut = new ArrayList<>(FileUtils.readLines(getDataFile(), Charset.defaultCharset()));
+
+            // need to convert this string somehow
+            // items = new ArrayList<>(FileUtils.readLines(getDataFile(), Charset.defaultCharset()));
         } catch (IOException e) {
             Log.e("MainActivity", "Error reading items", e);
             items = new ArrayList<>();

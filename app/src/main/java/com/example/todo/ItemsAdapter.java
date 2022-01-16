@@ -1,19 +1,15 @@
 package com.example.todo;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> {
 
@@ -25,11 +21,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
         void onItemLongClicked(int position);
     }
 
-    List<String> items;
+    List<ToDoItem> items;
     OnLongClickListener longClickListener;
     OnClickListener clickListener;
 
-    public ItemsAdapter(List<String> items, OnLongClickListener longClickListener, OnClickListener clickListener) {
+    public ItemsAdapter(List<ToDoItem> items, OnLongClickListener longClickListener, OnClickListener clickListener) {
         this.items = items;
         this.longClickListener = longClickListener;
         this.clickListener = clickListener;
@@ -38,13 +34,13 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View todoView = LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
+        View todoView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_todo, parent, false);
         return new ViewHolder(todoView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String item = items.get(position);
+        ToDoItem item = items.get(position);
         holder.bind(item);
     }
 
@@ -56,26 +52,21 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
     class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvItem;
+        CheckBox cbItem;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvItem = itemView.findViewById(android.R.id.text1);
+            cbItem = itemView.findViewById(android.R.id.checkbox);
         }
 
-        public void bind(String item) {
-            tvItem.setText(item);
-            tvItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    clickListener.onItemClicked(getAdapterPosition());
-                }
-            });
-            tvItem.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    longClickListener.onItemLongClicked(getAdapterPosition());
-                    return true;
-                }
+        public void bind(ToDoItem item) {
+            tvItem.setText(item.item);
+            cbItem.setChecked(item.isChecked);
+            tvItem.setOnClickListener(v -> clickListener.onItemClicked(getAdapterPosition()));
+            tvItem.setOnLongClickListener(v -> {
+                longClickListener.onItemLongClicked(getAdapterPosition());
+                return true;
             });
         }
     }

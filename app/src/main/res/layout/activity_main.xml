@@ -29,8 +29,7 @@
         android:hint="@string/add_hint"
         android:inputType="textPersonName"
         android:minHeight="48dp"
-        tools:ignore="SpeakableTextPresentCheck"
-        android:autofillHints="" />
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvItems"
