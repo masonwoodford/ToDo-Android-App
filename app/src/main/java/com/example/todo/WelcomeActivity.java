@@ -33,6 +33,7 @@ public class WelcomeActivity extends AppCompatActivity {
        new Handler().postDelayed(() -> {
             Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
             startActivity(intent);
+            overridePendingTransition(0, 0);
             finish();
        }, WELCOME_SCREEN_TIMEOUT);
     }
