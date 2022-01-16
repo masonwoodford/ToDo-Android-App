@@ -4,26 +4,36 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
+import android.os.Handler;
+import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.widget.ImageView;
 
 public class WelcomeActivity extends AppCompatActivity {
 
-    Button btnNav;
+    private static final int WELCOME_SCREEN_TIMEOUT = 2500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_welcome);
 
-        btnNav = findViewById(R.id.btnNav);
+        Animation fadeOut = new AlphaAnimation(1, 0);
+        fadeOut.setInterpolator(new AccelerateInterpolator());
+        fadeOut.setStartOffset(500);
+        fadeOut.setDuration(2000);
+        ImageView image = findViewById(R.id.imageView);
 
-        btnNav.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent startAppIntent = new Intent(WelcomeActivity.this, MainActivity.class);
-                startActivity(startAppIntent);
-            }
-        });
+        image.setAnimation(fadeOut);
+
+       new Handler().postDelayed(() -> {
+            Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+       }, WELCOME_SCREEN_TIMEOUT);
     }
 }

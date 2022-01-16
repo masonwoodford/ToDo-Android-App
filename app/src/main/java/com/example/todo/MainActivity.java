@@ -52,49 +52,35 @@ public class MainActivity extends AppCompatActivity {
 
         loadItems();
 
-        ItemsAdapter.OnLongClickListener onLongClickListener = new ItemsAdapter.OnLongClickListener() {
-            @Override
-            public void onItemLongClicked(int position) {
-                items.remove(position);
-                itemsAdapter.notifyItemRemoved(position);
-                Toast.makeText(getApplicationContext(), "Item was removed", Toast.LENGTH_SHORT).show();
-                saveItems();
-            }
+        ItemsAdapter.OnLongClickListener onLongClickListener = position -> {
+            items.remove(position);
+            itemsAdapter.notifyItemRemoved(position);
+            Toast.makeText(getApplicationContext(), "Item was removed", Toast.LENGTH_SHORT).show();
+            saveItems();
         };
 
-        ItemsAdapter.OnClickListener onClickListener = new ItemsAdapter.OnClickListener() {
-            @Override
-            public void onItemClicked(int position) {
-                Intent i = new Intent(MainActivity.this, EditActivity.class);
-                i.putExtra(KEY_ITEM_TEXT, items.get(position));
-                i.putExtra(KEY_ITEM_POSITION, position);
-                startActivityForResult(i, EDIT_TEXT_CODE);
-            }
+        ItemsAdapter.OnClickListener onClickListener = position -> {
+            Intent i = new Intent(MainActivity.this, EditActivity.class);
+            i.putExtra(KEY_ITEM_TEXT, items.get(position));
+            i.putExtra(KEY_ITEM_POSITION, position);
+            startActivityForResult(i, EDIT_TEXT_CODE);
         };
 
         itemsAdapter = new ItemsAdapter(items, onLongClickListener, onClickListener);
         rvItems.setAdapter(itemsAdapter);
         rvItems.setLayoutManager(new LinearLayoutManager(this));
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String todoItem = etItem.getText().toString();
-                items.add(todoItem);
-                itemsAdapter.notifyItemInserted(items.size()-1);
-                etItem.setText("");
-                Toast.makeText(getApplicationContext(), "Item was added", Toast.LENGTH_SHORT).show();
-                saveItems();
-                closeKeyboard();
-            }
+        btnAdd.setOnClickListener(view -> {
+            String todoItem = etItem.getText().toString();
+            items.add(todoItem);
+            itemsAdapter.notifyItemInserted(items.size()-1);
+            etItem.setText("");
+            Toast.makeText(getApplicationContext(), "Item was added", Toast.LENGTH_SHORT).show();
+            saveItems();
+            closeKeyboard();
         });
 
-        searchView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                searchView.setIconified(false);
-            }
-        });
+        searchView.setOnClickListener(view -> searchView.setIconified(false));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -128,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (resultCode == RESULT_OK && requestCode == EDIT_TEXT_CODE) {
+            assert data != null;
             String itemText = data.getStringExtra(KEY_ITEM_TEXT);
             int position = data.getExtras().getInt(KEY_ITEM_POSITION);
             items.set(position, itemText);
