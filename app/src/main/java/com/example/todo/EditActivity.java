@@ -23,16 +23,13 @@ public class EditActivity extends AppCompatActivity {
         
         etItem.setText(getIntent().getStringExtra(MainActivity.KEY_ITEM_TEXT));
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View v) {
-              Intent intent = new Intent();
-              intent.putExtra(MainActivity.KEY_ITEM_TEXT, etItem.getText().toString());
-              intent.putExtra(MainActivity.KEY_ITEM_POSITION, getIntent().getExtras().getInt(MainActivity.KEY_ITEM_POSITION));
-              intent.putExtra(MainActivity.KEY_ITEM_CHECKED_STATUS, getIntent().getExtras().getBoolean(MainActivity.KEY_ITEM_CHECKED_STATUS));
-              setResult(RESULT_OK, intent);
-              finish();
-          }
+        btnSave.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.putExtra(MainActivity.KEY_ITEM_TEXT, etItem.getText().toString());
+            intent.putExtra(MainActivity.KEY_ITEM_POSITION, getIntent().getExtras().getInt(MainActivity.KEY_ITEM_POSITION));
+            intent.putExtra(MainActivity.KEY_ITEM_CHECKED_STATUS, getIntent().getExtras().getBoolean(MainActivity.KEY_ITEM_CHECKED_STATUS));
+            setResult(RESULT_OK, intent);
+            finish();
         });
     }
 }

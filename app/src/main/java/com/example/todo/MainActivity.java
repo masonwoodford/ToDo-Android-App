@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         etItem = findViewById(R.id.etItem);
         rvItems = findViewById(R.id.rvItems);
         searchView = findViewById(R.id.searchItem);
-        searchView.setSubmitButtonEnabled(true);
 
         loadItems();
 
@@ -66,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
             i.putExtra(KEY_ITEM_TEXT, items.get(position).item);
             i.putExtra(KEY_ITEM_POSITION, position);
             i.putExtra(KEY_ITEM_CHECKED_STATUS, items.get(position).isChecked);
-            Log.i(LOG_TAG, String.valueOf(items.get(position).isChecked));
             startActivityForResult(i, EDIT_TEXT_CODE);
         };
 
@@ -127,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
             assert data != null;
             String itemText = data.getStringExtra(KEY_ITEM_TEXT);
             boolean isChecked = data.getBooleanExtra(KEY_ITEM_CHECKED_STATUS, false);
-            Log.i(LOG_TAG, String.valueOf(isChecked));
             ToDoItem newItem = new ToDoItem(itemText, isChecked);
             int position = data.getExtras().getInt(KEY_ITEM_POSITION);
             items.set(position, newItem);
@@ -147,9 +144,9 @@ public class MainActivity extends AppCompatActivity {
     private void loadItems() {
         try {
             ArrayList<String> itemsOut = new ArrayList<>(FileUtils.readLines(getDataFile(), Charset.defaultCharset()));
+            items = new ArrayList<>();
             if (itemsOut.size() > 0) {
                 for (int i = 0; i < itemsOut.size(); i++) {
-                    items = new ArrayList<>();
                     ToDoItem newItem = new ToDoItem(itemsOut.get(i));
                     items.add(newItem);
                 }

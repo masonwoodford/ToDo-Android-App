@@ -1,5 +1,6 @@
 package com.example.todo;
 
+import android.graphics.drawable.LayerDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.helper.widget.Layer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -29,6 +31,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
     OnLongClickListener longClickListener;
     OnClickListener clickListener;
     CheckBoxClickListener cbListener;
+
 
     public ItemsAdapter(List<ToDoItem> items, OnLongClickListener longClickListener, OnClickListener clickListener, CheckBoxClickListener cbListener) {
         this.items = items;
