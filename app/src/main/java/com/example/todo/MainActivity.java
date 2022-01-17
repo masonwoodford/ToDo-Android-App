@@ -29,7 +29,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String KEY_ITEM_TEXT = "item_text";
     public static final String KEY_ITEM_POSITION = "item_position";
+    public static final String KEY_ITEM_CHECKED_STATUS = "item_is_checked";
     public static final int EDIT_TEXT_CODE = 5;
+    private static final String LOG_TAG = "MainActivity";
 
     List<ToDoItem> items;
 
@@ -63,10 +65,18 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent(MainActivity.this, EditActivity.class);
             i.putExtra(KEY_ITEM_TEXT, items.get(position).item);
             i.putExtra(KEY_ITEM_POSITION, position);
+            i.putExtra(KEY_ITEM_CHECKED_STATUS, items.get(position).isChecked);
+            Log.i(LOG_TAG, String.valueOf(items.get(position).isChecked));
             startActivityForResult(i, EDIT_TEXT_CODE);
         };
 
-        itemsAdapter = new ItemsAdapter(items, onLongClickListener, onClickListener);
+        ItemsAdapter.CheckBoxClickListener cbListener = position -> {
+            items.get(position).checked();
+            itemsAdapter.notifyItemChanged(position);
+            saveItems();
+        };
+
+        itemsAdapter = new ItemsAdapter(items, onLongClickListener, onClickListener, cbListener);
         rvItems.setAdapter(itemsAdapter);
         rvItems.setLayoutManager(new LinearLayoutManager(this));
 
@@ -93,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String s) {
                 if (s.length() == 0) {
-                    itemsAdapter = new ItemsAdapter(items, onLongClickListener, onClickListener);
+                    itemsAdapter = new ItemsAdapter(items, onLongClickListener, onClickListener, cbListener);
                     rvItems.setAdapter(itemsAdapter);
                     return false;
                 }
@@ -103,9 +113,8 @@ public class MainActivity extends AppCompatActivity {
                         filteredItems.add(item);
                     }
                 }
-                itemsAdapter = new ItemsAdapter(filteredItems, onLongClickListener, onClickListener);
+                itemsAdapter = new ItemsAdapter(filteredItems, onLongClickListener, onClickListener, cbListener);
                 rvItems.setAdapter(itemsAdapter);
-
                 return false;
             }
         });
@@ -117,30 +126,38 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == EDIT_TEXT_CODE) {
             assert data != null;
             String itemText = data.getStringExtra(KEY_ITEM_TEXT);
-            ToDoItem newItem = new ToDoItem(itemText, false);
+            boolean isChecked = data.getBooleanExtra(KEY_ITEM_CHECKED_STATUS, false);
+            Log.i(LOG_TAG, String.valueOf(isChecked));
+            ToDoItem newItem = new ToDoItem(itemText, isChecked);
             int position = data.getExtras().getInt(KEY_ITEM_POSITION);
             items.set(position, newItem);
             itemsAdapter.notifyItemChanged(position);
             saveItems();
             Toast.makeText(getApplicationContext(), "Updated successfully", Toast.LENGTH_SHORT).show();
         } else {
-            Log.w("MainActivity", "Unknown call to onActivityResult");
+            Log.w(LOG_TAG, "Unknown call to onActivityResult");
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     private File getDataFile() {
-        return new File(getFilesDir(), "items.txt");
+        return new File(getFilesDir(), "toDoItems.txt");
     }
 
     private void loadItems() {
         try {
             ArrayList<String> itemsOut = new ArrayList<>(FileUtils.readLines(getDataFile(), Charset.defaultCharset()));
-
-            // need to convert this string somehow
-            // items = new ArrayList<>(FileUtils.readLines(getDataFile(), Charset.defaultCharset()));
+            if (itemsOut.size() > 0) {
+                for (int i = 0; i < itemsOut.size(); i++) {
+                    items = new ArrayList<>();
+                    ToDoItem newItem = new ToDoItem(itemsOut.get(i));
+                    items.add(newItem);
+                }
+            } else {
+                items = new ArrayList<>();
+            }
         } catch (IOException e) {
-            Log.e("MainActivity", "Error reading items", e);
+            Log.e(LOG_TAG, "Error reading items", e);
             items = new ArrayList<>();
         }
     }
@@ -149,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             FileUtils.writeLines(getDataFile(), items);
         } catch (IOException e) {
-            Log.e("MainActivity", "Error writing items", e);
+            Log.e(LOG_TAG, "Error writing items", e);
         }
     }
 

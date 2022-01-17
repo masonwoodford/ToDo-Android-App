@@ -21,14 +21,20 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
         void onItemLongClicked(int position);
     }
 
+    public interface CheckBoxClickListener {
+        void onCheckBoxClicked(int position);
+    }
+
     List<ToDoItem> items;
     OnLongClickListener longClickListener;
     OnClickListener clickListener;
+    CheckBoxClickListener cbListener;
 
-    public ItemsAdapter(List<ToDoItem> items, OnLongClickListener longClickListener, OnClickListener clickListener) {
+    public ItemsAdapter(List<ToDoItem> items, OnLongClickListener longClickListener, OnClickListener clickListener, CheckBoxClickListener cbListener) {
         this.items = items;
         this.longClickListener = longClickListener;
         this.clickListener = clickListener;
+        this.cbListener = cbListener;
     }
 
     @NonNull
@@ -56,13 +62,14 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvItem = itemView.findViewById(android.R.id.text1);
-            cbItem = itemView.findViewById(android.R.id.checkbox);
+            tvItem = itemView.findViewById(R.id.tvItem);
+            cbItem = itemView.findViewById(R.id.cbItem);
         }
 
         public void bind(ToDoItem item) {
             tvItem.setText(item.item);
             cbItem.setChecked(item.isChecked);
+            cbItem.setOnClickListener(c -> cbListener.onCheckBoxClicked(getAdapterPosition()));
             tvItem.setOnClickListener(v -> clickListener.onItemClicked(getAdapterPosition()));
             tvItem.setOnLongClickListener(v -> {
                 longClickListener.onItemLongClicked(getAdapterPosition());

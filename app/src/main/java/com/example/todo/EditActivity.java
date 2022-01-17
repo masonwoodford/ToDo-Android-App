@@ -29,6 +29,7 @@ public class EditActivity extends AppCompatActivity {
               Intent intent = new Intent();
               intent.putExtra(MainActivity.KEY_ITEM_TEXT, etItem.getText().toString());
               intent.putExtra(MainActivity.KEY_ITEM_POSITION, getIntent().getExtras().getInt(MainActivity.KEY_ITEM_POSITION));
+              intent.putExtra(MainActivity.KEY_ITEM_CHECKED_STATUS, getIntent().getExtras().getBoolean(MainActivity.KEY_ITEM_CHECKED_STATUS));
               setResult(RESULT_OK, intent);
               finish();
           }
